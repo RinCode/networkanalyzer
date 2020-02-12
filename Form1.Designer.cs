@@ -36,8 +36,6 @@
             this.editLocalIPPort = new System.Windows.Forms.TextBox();
             this.lblLocalIPPort = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lblTcping = new System.Windows.Forms.Label();
-            this.lblGoogle = new System.Windows.Forms.Label();
             this.lblTcpingResult = new System.Windows.Forms.Label();
             this.lblGoogleResult = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -45,24 +43,30 @@
             this.toolStripStatusLblStatusResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblLastUpdateTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblLastUpdateTimeResult = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblPing = new System.Windows.Forms.Label();
             this.lblPingResult = new System.Windows.Forms.Label();
             this.chtPing = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBoxRecord = new System.Windows.Forms.GroupBox();
             this.groupBoxNowRecord = new System.Windows.Forms.GroupBox();
+            this.checkBoxGoogleOn = new System.Windows.Forms.CheckBox();
+            this.checkBoxTcpingOn = new System.Windows.Forms.CheckBox();
+            this.checkBoxPingOn = new System.Windows.Forms.CheckBox();
             this.groupBoxSetting = new System.Windows.Forms.GroupBox();
+            this.editAverageTimes = new System.Windows.Forms.TextBox();
+            this.lblAverageTimes = new System.Windows.Forms.Label();
+            this.lblCheckInterval = new System.Windows.Forms.Label();
+            this.editCheckInterval = new System.Windows.Forms.TextBox();
             this.groupBoxWarningThreshold = new System.Windows.Forms.GroupBox();
-            this.checkBoxGoogle = new System.Windows.Forms.CheckBox();
-            this.checkBoxTcping = new System.Windows.Forms.CheckBox();
-            this.checkBoxPing = new System.Windows.Forms.CheckBox();
+            this.checkBoxGoogleWarning = new System.Windows.Forms.CheckBox();
+            this.checkBoxTcpingWarning = new System.Windows.Forms.CheckBox();
+            this.checkBoxPingWarning = new System.Windows.Forms.CheckBox();
             this.editWarningGoogleThreshold = new System.Windows.Forms.TextBox();
             this.editWarningTcpingThreshold = new System.Windows.Forms.TextBox();
             this.editWarningPingThreshold = new System.Windows.Forms.TextBox();
             this.lblServerIPPort = new System.Windows.Forms.Label();
             this.editServerIPPort = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButtonRun = new System.Windows.Forms.ToolStripDropDownButton();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,12 +76,13 @@
             this.clearLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chtPing)).BeginInit();
             this.groupBoxNowRecord.SuspendLayout();
             this.groupBoxSetting.SuspendLayout();
             this.groupBoxWarningThreshold.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // editLocalIPPort
@@ -94,40 +99,22 @@
             this.lblLocalIPPort.Name = "lblLocalIPPort";
             this.lblLocalIPPort.Size = new System.Drawing.Size(71, 12);
             this.lblLocalIPPort.TabIndex = 1;
-            this.lblLocalIPPort.Text = "本地IP:端口";
+            this.lblLocalIPPort.Text = "代理IP:端口";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(239, 138);
+            this.btnSave.Location = new System.Drawing.Point(216, 150);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.Size = new System.Drawing.Size(113, 23);
             this.btnSave.TabIndex = 2;
             this.btnSave.Text = "保存";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // lblTcping
-            // 
-            this.lblTcping.AutoSize = true;
-            this.lblTcping.Location = new System.Drawing.Point(18, 74);
-            this.lblTcping.Name = "lblTcping";
-            this.lblTcping.Size = new System.Drawing.Size(77, 12);
-            this.lblTcping.TabIndex = 3;
-            this.lblTcping.Text = "Tcping延迟：";
-            // 
-            // lblGoogle
-            // 
-            this.lblGoogle.AutoSize = true;
-            this.lblGoogle.Location = new System.Drawing.Point(18, 119);
-            this.lblGoogle.Name = "lblGoogle";
-            this.lblGoogle.Size = new System.Drawing.Size(77, 12);
-            this.lblGoogle.TabIndex = 4;
-            this.lblGoogle.Text = "Google延迟：";
-            // 
             // lblTcpingResult
             // 
             this.lblTcpingResult.AutoSize = true;
-            this.lblTcpingResult.Location = new System.Drawing.Point(18, 98);
+            this.lblTcpingResult.Location = new System.Drawing.Point(18, 94);
             this.lblTcpingResult.Name = "lblTcpingResult";
             this.lblTcpingResult.Size = new System.Drawing.Size(11, 12);
             this.lblTcpingResult.TabIndex = 5;
@@ -136,7 +123,7 @@
             // lblGoogleResult
             // 
             this.lblGoogleResult.AutoSize = true;
-            this.lblGoogleResult.Location = new System.Drawing.Point(18, 141);
+            this.lblGoogleResult.Location = new System.Drawing.Point(18, 137);
             this.lblGoogleResult.Name = "lblGoogleResult";
             this.lblGoogleResult.Size = new System.Drawing.Size(11, 12);
             this.lblGoogleResult.TabIndex = 6;
@@ -178,15 +165,6 @@
             this.toolStripStatusLblLastUpdateTimeResult.Name = "toolStripStatusLblLastUpdateTimeResult";
             this.toolStripStatusLblLastUpdateTimeResult.Size = new System.Drawing.Size(13, 17);
             this.toolStripStatusLblLastUpdateTimeResult.Text = "-";
-            // 
-            // lblPing
-            // 
-            this.lblPing.AutoSize = true;
-            this.lblPing.Location = new System.Drawing.Point(18, 28);
-            this.lblPing.Name = "lblPing";
-            this.lblPing.Size = new System.Drawing.Size(65, 12);
-            this.lblPing.TabIndex = 9;
-            this.lblPing.Text = "Ping延迟：";
             // 
             // lblPingResult
             // 
@@ -234,11 +212,11 @@
             // 
             // groupBoxNowRecord
             // 
-            this.groupBoxNowRecord.Controls.Add(this.lblPing);
+            this.groupBoxNowRecord.Controls.Add(this.checkBoxGoogleOn);
+            this.groupBoxNowRecord.Controls.Add(this.checkBoxTcpingOn);
+            this.groupBoxNowRecord.Controls.Add(this.checkBoxPingOn);
             this.groupBoxNowRecord.Controls.Add(this.lblPingResult);
-            this.groupBoxNowRecord.Controls.Add(this.lblTcping);
             this.groupBoxNowRecord.Controls.Add(this.lblTcpingResult);
-            this.groupBoxNowRecord.Controls.Add(this.lblGoogle);
             this.groupBoxNowRecord.Controls.Add(this.lblGoogleResult);
             this.groupBoxNowRecord.Cursor = System.Windows.Forms.Cursors.Default;
             this.groupBoxNowRecord.Location = new System.Drawing.Point(13, 236);
@@ -248,8 +226,42 @@
             this.groupBoxNowRecord.TabStop = false;
             this.groupBoxNowRecord.Text = "当前延迟";
             // 
+            // checkBoxGoogleOn
+            // 
+            this.checkBoxGoogleOn.AutoSize = true;
+            this.checkBoxGoogleOn.Location = new System.Drawing.Point(17, 118);
+            this.checkBoxGoogleOn.Name = "checkBoxGoogleOn";
+            this.checkBoxGoogleOn.Size = new System.Drawing.Size(60, 16);
+            this.checkBoxGoogleOn.TabIndex = 13;
+            this.checkBoxGoogleOn.Text = "Google";
+            this.checkBoxGoogleOn.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxTcpingOn
+            // 
+            this.checkBoxTcpingOn.AutoSize = true;
+            this.checkBoxTcpingOn.Location = new System.Drawing.Point(17, 75);
+            this.checkBoxTcpingOn.Name = "checkBoxTcpingOn";
+            this.checkBoxTcpingOn.Size = new System.Drawing.Size(60, 16);
+            this.checkBoxTcpingOn.TabIndex = 12;
+            this.checkBoxTcpingOn.Text = "Tcping";
+            this.checkBoxTcpingOn.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxPingOn
+            // 
+            this.checkBoxPingOn.AutoSize = true;
+            this.checkBoxPingOn.Location = new System.Drawing.Point(17, 32);
+            this.checkBoxPingOn.Name = "checkBoxPingOn";
+            this.checkBoxPingOn.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxPingOn.TabIndex = 11;
+            this.checkBoxPingOn.Text = "Ping";
+            this.checkBoxPingOn.UseVisualStyleBackColor = true;
+            // 
             // groupBoxSetting
             // 
+            this.groupBoxSetting.Controls.Add(this.editAverageTimes);
+            this.groupBoxSetting.Controls.Add(this.lblAverageTimes);
+            this.groupBoxSetting.Controls.Add(this.lblCheckInterval);
+            this.groupBoxSetting.Controls.Add(this.editCheckInterval);
             this.groupBoxSetting.Controls.Add(this.groupBoxWarningThreshold);
             this.groupBoxSetting.Controls.Add(this.lblServerIPPort);
             this.groupBoxSetting.Controls.Add(this.editServerIPPort);
@@ -263,50 +275,88 @@
             this.groupBoxSetting.TabStop = false;
             this.groupBoxSetting.Text = "设置";
             // 
+            // editAverageTimes
+            // 
+            this.editAverageTimes.Location = new System.Drawing.Point(291, 120);
+            this.editAverageTimes.Name = "editAverageTimes";
+            this.editAverageTimes.Size = new System.Drawing.Size(38, 21);
+            this.editAverageTimes.TabIndex = 13;
+            this.editAverageTimes.Text = "3";
+            this.editAverageTimes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.editAverageTimes_KeyPress);
+            // 
+            // lblAverageTimes
+            // 
+            this.lblAverageTimes.AutoSize = true;
+            this.lblAverageTimes.Location = new System.Drawing.Point(214, 123);
+            this.lblAverageTimes.Name = "lblAverageTimes";
+            this.lblAverageTimes.Size = new System.Drawing.Size(53, 12);
+            this.lblAverageTimes.TabIndex = 12;
+            this.lblAverageTimes.Text = "平均次数";
+            this.toolTip.SetToolTip(this.lblAverageTimes, "指对n次测试去最后平均值");
+            // 
+            // lblCheckInterval
+            // 
+            this.lblCheckInterval.AutoSize = true;
+            this.lblCheckInterval.Location = new System.Drawing.Point(214, 92);
+            this.lblCheckInterval.Name = "lblCheckInterval";
+            this.lblCheckInterval.Size = new System.Drawing.Size(71, 12);
+            this.lblCheckInterval.TabIndex = 11;
+            this.lblCheckInterval.Text = "检测间隔(s)";
+            this.toolTip.SetToolTip(this.lblCheckInterval, "由于延迟计算为四次取平均值，故此处非绝对间隔，且不要设置太短。");
+            // 
+            // editCheckInterval
+            // 
+            this.editCheckInterval.Location = new System.Drawing.Point(291, 89);
+            this.editCheckInterval.Name = "editCheckInterval";
+            this.editCheckInterval.Size = new System.Drawing.Size(38, 21);
+            this.editCheckInterval.TabIndex = 10;
+            this.editCheckInterval.Text = "10";
+            this.editCheckInterval.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.editCheckInterval_KeyPress);
+            // 
             // groupBoxWarningThreshold
             // 
-            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxGoogle);
-            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxTcping);
-            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxPing);
+            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxGoogleWarning);
+            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxTcpingWarning);
+            this.groupBoxWarningThreshold.Controls.Add(this.checkBoxPingWarning);
             this.groupBoxWarningThreshold.Controls.Add(this.editWarningGoogleThreshold);
             this.groupBoxWarningThreshold.Controls.Add(this.editWarningTcpingThreshold);
             this.groupBoxWarningThreshold.Controls.Add(this.editWarningPingThreshold);
             this.groupBoxWarningThreshold.Location = new System.Drawing.Point(22, 74);
             this.groupBoxWarningThreshold.Name = "groupBoxWarningThreshold";
-            this.groupBoxWarningThreshold.Size = new System.Drawing.Size(211, 99);
+            this.groupBoxWarningThreshold.Size = new System.Drawing.Size(186, 99);
             this.groupBoxWarningThreshold.TabIndex = 9;
             this.groupBoxWarningThreshold.TabStop = false;
             this.groupBoxWarningThreshold.Text = "警告阈值(ms)";
             // 
-            // checkBoxGoogle
+            // checkBoxGoogleWarning
             // 
-            this.checkBoxGoogle.AutoSize = true;
-            this.checkBoxGoogle.Location = new System.Drawing.Point(25, 64);
-            this.checkBoxGoogle.Name = "checkBoxGoogle";
-            this.checkBoxGoogle.Size = new System.Drawing.Size(60, 16);
-            this.checkBoxGoogle.TabIndex = 13;
-            this.checkBoxGoogle.Text = "Google";
-            this.checkBoxGoogle.UseVisualStyleBackColor = true;
+            this.checkBoxGoogleWarning.AutoSize = true;
+            this.checkBoxGoogleWarning.Location = new System.Drawing.Point(25, 64);
+            this.checkBoxGoogleWarning.Name = "checkBoxGoogleWarning";
+            this.checkBoxGoogleWarning.Size = new System.Drawing.Size(60, 16);
+            this.checkBoxGoogleWarning.TabIndex = 13;
+            this.checkBoxGoogleWarning.Text = "Google";
+            this.checkBoxGoogleWarning.UseVisualStyleBackColor = true;
             // 
-            // checkBoxTcping
+            // checkBoxTcpingWarning
             // 
-            this.checkBoxTcping.AutoSize = true;
-            this.checkBoxTcping.Location = new System.Drawing.Point(25, 42);
-            this.checkBoxTcping.Name = "checkBoxTcping";
-            this.checkBoxTcping.Size = new System.Drawing.Size(60, 16);
-            this.checkBoxTcping.TabIndex = 12;
-            this.checkBoxTcping.Text = "Tcping";
-            this.checkBoxTcping.UseVisualStyleBackColor = true;
+            this.checkBoxTcpingWarning.AutoSize = true;
+            this.checkBoxTcpingWarning.Location = new System.Drawing.Point(25, 42);
+            this.checkBoxTcpingWarning.Name = "checkBoxTcpingWarning";
+            this.checkBoxTcpingWarning.Size = new System.Drawing.Size(60, 16);
+            this.checkBoxTcpingWarning.TabIndex = 12;
+            this.checkBoxTcpingWarning.Text = "Tcping";
+            this.checkBoxTcpingWarning.UseVisualStyleBackColor = true;
             // 
-            // checkBoxPing
+            // checkBoxPingWarning
             // 
-            this.checkBoxPing.AutoSize = true;
-            this.checkBoxPing.Location = new System.Drawing.Point(25, 20);
-            this.checkBoxPing.Name = "checkBoxPing";
-            this.checkBoxPing.Size = new System.Drawing.Size(48, 16);
-            this.checkBoxPing.TabIndex = 11;
-            this.checkBoxPing.Text = "Ping";
-            this.checkBoxPing.UseVisualStyleBackColor = true;
+            this.checkBoxPingWarning.AutoSize = true;
+            this.checkBoxPingWarning.Location = new System.Drawing.Point(25, 20);
+            this.checkBoxPingWarning.Name = "checkBoxPingWarning";
+            this.checkBoxPingWarning.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxPingWarning.TabIndex = 11;
+            this.checkBoxPingWarning.Text = "Ping";
+            this.checkBoxPingWarning.UseVisualStyleBackColor = true;
             // 
             // editWarningGoogleThreshold
             // 
@@ -314,6 +364,7 @@
             this.editWarningGoogleThreshold.Name = "editWarningGoogleThreshold";
             this.editWarningGoogleThreshold.Size = new System.Drawing.Size(77, 21);
             this.editWarningGoogleThreshold.TabIndex = 10;
+            this.editWarningGoogleThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.editWarningGoogleThreshold_KeyPress);
             // 
             // editWarningTcpingThreshold
             // 
@@ -321,6 +372,7 @@
             this.editWarningTcpingThreshold.Name = "editWarningTcpingThreshold";
             this.editWarningTcpingThreshold.Size = new System.Drawing.Size(77, 21);
             this.editWarningTcpingThreshold.TabIndex = 9;
+            this.editWarningTcpingThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.editWarningTcpingThreshold_KeyPress);
             // 
             // editWarningPingThreshold
             // 
@@ -328,6 +380,7 @@
             this.editWarningPingThreshold.Name = "editWarningPingThreshold";
             this.editWarningPingThreshold.Size = new System.Drawing.Size(77, 21);
             this.editWarningPingThreshold.TabIndex = 8;
+            this.editWarningPingThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.editWarningPingThreshold_KeyPress);
             // 
             // lblServerIPPort
             // 
@@ -350,17 +403,17 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // toolStrip1
+            // toolStrip
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButtonRun,
             this.toolStripDropDownButtonData,
             this.toolStripButtonAbout});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(915, 25);
-            this.toolStrip1.TabIndex = 18;
-            this.toolStrip1.Text = "toolStrip";
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Size = new System.Drawing.Size(915, 25);
+            this.toolStrip.TabIndex = 18;
+            this.toolStrip.Text = "toolStrip";
             // 
             // toolStripDropDownButtonRun
             // 
@@ -377,7 +430,7 @@
             // runToolStripMenuItem
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.runToolStripMenuItem.Text = "运行";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
@@ -385,7 +438,7 @@
             // 
             this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.stopToolStripMenuItem.Text = "停止";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
@@ -446,7 +499,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 435);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.groupBoxSetting);
             this.Controls.Add(this.groupBoxNowRecord);
             this.Controls.Add(this.chtPing);
@@ -466,8 +519,8 @@
             this.groupBoxSetting.PerformLayout();
             this.groupBoxWarningThreshold.ResumeLayout(false);
             this.groupBoxWarningThreshold.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -478,8 +531,6 @@
         private System.Windows.Forms.TextBox editLocalIPPort;
         private System.Windows.Forms.Label lblLocalIPPort;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Label lblTcping;
-        private System.Windows.Forms.Label lblGoogle;
         private System.Windows.Forms.Label lblTcpingResult;
         private System.Windows.Forms.Label lblGoogleResult;
         private System.Windows.Forms.StatusStrip statusStrip1;
@@ -487,7 +538,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblLastUpdateTimeResult;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblStatus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblStatusResult;
-        private System.Windows.Forms.Label lblPing;
         private System.Windows.Forms.Label lblPingResult;
         private System.Windows.Forms.DataVisualization.Charting.Chart chtPing;
         private System.Windows.Forms.NotifyIcon notifyIcon;
@@ -499,12 +549,12 @@
         private System.Windows.Forms.TextBox editServerIPPort;
         private System.Windows.Forms.TextBox editWarningPingThreshold;
         private System.Windows.Forms.GroupBox groupBoxWarningThreshold;
-        private System.Windows.Forms.CheckBox checkBoxGoogle;
-        private System.Windows.Forms.CheckBox checkBoxTcping;
-        private System.Windows.Forms.CheckBox checkBoxPing;
+        private System.Windows.Forms.CheckBox checkBoxGoogleWarning;
+        private System.Windows.Forms.CheckBox checkBoxTcpingWarning;
+        private System.Windows.Forms.CheckBox checkBoxPingWarning;
         private System.Windows.Forms.TextBox editWarningGoogleThreshold;
         private System.Windows.Forms.TextBox editWarningTcpingThreshold;
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonData;
         private System.Windows.Forms.ToolStripMenuItem 日志ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem readLogToolStripMenuItem;
@@ -514,6 +564,14 @@
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonAbout;
+        private System.Windows.Forms.CheckBox checkBoxGoogleOn;
+        private System.Windows.Forms.CheckBox checkBoxTcpingOn;
+        private System.Windows.Forms.CheckBox checkBoxPingOn;
+        private System.Windows.Forms.Label lblCheckInterval;
+        private System.Windows.Forms.TextBox editCheckInterval;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label lblAverageTimes;
+        private System.Windows.Forms.TextBox editAverageTimes;
     }
 }
 

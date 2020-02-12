@@ -16,7 +16,7 @@ namespace networkanalyzer
 {
     public partial class NetworkAnalyzer : Form
     {
-        public delegate void UpdateProgress(int status, string updatetime, List<double> pingresult,List<double> tcpresult, List<double> googleresult);
+        public delegate void UpdateProgress(int status, string updatetime, List<double> pingresult, List<double> tcpresult, List<double> googleresult);
         private UpdateProgress updator;
         CancellationTokenSource cts = null;
         private bool Running = false;
@@ -55,13 +55,14 @@ namespace networkanalyzer
             this.notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
             this.notifyIcon.ContextMenuStrip.Items.Add("Start", null, this.notifyIconMenuStart_Click);
             this.notifyIcon.ContextMenuStrip.Items.Add("Exit", null, this.notifyIconMenuExit_Click);
-
+           
             var MyIni = new IniFile("Settings.ini");
-            this.editLocalIPPort.Text = MyIni.Read("local_ip_port","basic");
+            this.editLocalIPPort.Text = MyIni.Read("local_ip_port", "basic");
             this.editServerIPPort.Text = MyIni.Read("server_ip_port", "basic");
+            this.editCheckInterval.Text = MyIni.Read("interval", "monitor");
             try
             {
-                this.checkBoxPing.Checked = Convert.ToBoolean(MyIni.Read("ping_threshold_enable", "threshold"));
+                this.checkBoxPingWarning.Checked = Convert.ToBoolean(MyIni.Read("ping_threshold_enable", "threshold"));
             }
             catch
             {
@@ -70,7 +71,7 @@ namespace networkanalyzer
             this.editWarningPingThreshold.Text = MyIni.Read("ping_threshold_time", "threshold");
             try
             {
-                this.checkBoxTcping.Checked = Convert.ToBoolean(MyIni.Read("tcping_threshold_enable", "threshold"));
+                this.checkBoxTcpingWarning.Checked = Convert.ToBoolean(MyIni.Read("tcping_threshold_enable", "threshold"));
             }
             catch
             {
@@ -79,13 +80,38 @@ namespace networkanalyzer
             this.editWarningTcpingThreshold.Text = MyIni.Read("tcping_threshold_time", "threshold");
             try
             {
-                this.checkBoxGoogle.Checked = Convert.ToBoolean(MyIni.Read("google_threshold_enable", "threshold"));
+                this.checkBoxGoogleWarning.Checked = Convert.ToBoolean(MyIni.Read("google_threshold_enable", "threshold"));
             }
             catch
             {
 
             }
             this.editWarningGoogleThreshold.Text = MyIni.Read("google_threshold_time", "threshold");
+            try
+            {
+                this.checkBoxPingOn.Checked = Convert.ToBoolean(MyIni.Read("ping_monitor_on", "monitor"));
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                this.checkBoxTcpingOn.Checked = Convert.ToBoolean(MyIni.Read("tcping_monitor_on", "monitor"));
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                this.checkBoxGoogleOn.Checked = Convert.ToBoolean(MyIni.Read("google_monitor_on", "monitor"));
+            }
+            catch
+            {
+
+            }
+            this.editAverageTimes.Text = MyIni.Read("average_times", "monitor");
 
 
             this.chtPing.Series.Clear();
@@ -101,7 +127,7 @@ namespace networkanalyzer
             this.chtPing.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
             this.chtPing.ChartAreas[0].AxisX.ScaleView.Size = 20;
             this.chtPing.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.Zoom(0,20);
+            this.chtPing.ChartAreas[0].AxisX.ScaleView.Zoom(0, 20);
             this.chtPing.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
             this.chtPing.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = 20;
             this.chtPing.Series["Ping"].MarkerSize = 5;
@@ -117,7 +143,6 @@ namespace networkanalyzer
             if (this.WindowState == FormWindowState.Minimized)
             {
                 this.Hide();
-                Console.WriteLine("min");
                 this.ShowInTaskbar = false;
             }
         }
@@ -138,12 +163,17 @@ namespace networkanalyzer
             var MyIni = new IniFile("Settings.ini");
             MyIni.Write("local_ip_port", editLocalIPPort.Text, "basic");
             MyIni.Write("server_ip_port", editServerIPPort.Text, "basic");
-            MyIni.Write("ping_threshold_enable",checkBoxPing.Checked.ToString(),"threshold");
+            MyIni.Write("ping_threshold_enable", checkBoxPingWarning.Checked.ToString(), "threshold");
             MyIni.Write("ping_threshold_time", editWarningPingThreshold.Text, "threshold");
-            MyIni.Write("tcping_threshold_enable", checkBoxTcping.Checked.ToString(),"threshold");
+            MyIni.Write("tcping_threshold_enable", checkBoxTcpingWarning.Checked.ToString(), "threshold");
             MyIni.Write("tcping_threshold_time", editWarningTcpingThreshold.Text, "threshold");
-            MyIni.Write("google_threshold_enable", checkBoxGoogle.Checked.ToString(), "threshold");
+            MyIni.Write("google_threshold_enable", checkBoxGoogleWarning.Checked.ToString(), "threshold");
             MyIni.Write("google_threshold_time", editWarningGoogleThreshold.Text, "threshold");
+            MyIni.Write("ping_monitor_on", checkBoxPingOn.Checked.ToString(), "monitor");
+            MyIni.Write("tcping_monitor_on", checkBoxTcpingOn.Checked.ToString(), "monitor");
+            MyIni.Write("googleping_monitor_on", checkBoxGoogleOn.Checked.ToString(), "monitor");
+            MyIni.Write("interval", editCheckInterval.Text, "monitor");
+            MyIni.Write("average_times", editAverageTimes.Text, "monitor");
             MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -162,6 +192,10 @@ namespace networkanalyzer
                 this.runToolStripMenuItem.Enabled = false;
                 this.stopToolStripMenuItem.Enabled = true;
                 this.toolStripDropDownButtonData.Enabled = false;
+                this.editCheckInterval.Enabled = false;
+                this.editLocalIPPort.Enabled = false;
+                this.editServerIPPort.Enabled = false;
+                this.editAverageTimes.Enabled = false;
             }
             else
             {
@@ -170,6 +204,10 @@ namespace networkanalyzer
                 this.runToolStripMenuItem.Enabled = true;
                 this.stopToolStripMenuItem.Enabled = false;
                 this.toolStripDropDownButtonData.Enabled = true;
+                this.editCheckInterval.Enabled = true;
+                this.editLocalIPPort.Enabled = true;
+                this.editServerIPPort.Enabled = true;
+                this.editAverageTimes.Enabled = true;
             }
             this.notifyIcon.ContextMenuStrip.Items[0].Enabled = true;
         }
@@ -179,6 +217,10 @@ namespace networkanalyzer
             this.runToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Enabled = false;
             this.toolStripDropDownButtonData.Enabled = false;
+            this.editCheckInterval.Enabled = false;
+            this.editLocalIPPort.Enabled = false;
+            this.editServerIPPort.Enabled = false;
+            this.editAverageTimes.Enabled = false;
             this.notifyIcon.ContextMenuStrip.Items[0].Enabled = false;
             if (!Running)
             {
@@ -195,11 +237,12 @@ namespace networkanalyzer
             }
         }
 
-        private void UIUpdateProgress(int status,string updatetime, List<double> pingresult,List<double> tcpresult, List<double> googleresult)
+        private void UIUpdateProgress(int status, string updatetime, List<double> pingresult, List<double> tcpresult, List<double> googleresult)
         {
             this.toolStripStatusLblLastUpdateTimeResult.Text = updatetime;
-            if (status==1)
+            if (status == 1)
             {
+                updatetime = updatetime.Split(' ')[1];
                 this.status_change_check(true);
                 this.pingresult = pingresult;
                 this.tcpresult = tcpresult;
@@ -209,65 +252,45 @@ namespace networkanalyzer
                 this.lblTcpingResult.ForeColor = Color.Black;
                 this.lblGoogleResult.ForeColor = Color.Black;
                 string timeout = "";
-                try
+                int threshold;
+                threshold = strToInt(editWarningPingThreshold.Text,int.MaxValue);
+                Console.WriteLine(threshold);
+                if (checkBoxPingWarning.Checked && pingresult.Average() > threshold)
                 {
-                    int threshold = Int32.Parse(editWarningPingThreshold.Text);
-                    if (pingresult.Average() >= threshold && checkBoxPing.Checked == true)
-                    {
-                        timeout += "Ping ";
-                        this.lblPingResult.ForeColor = Color.Red;
-                    }
+                    timeout += "Ping ";
+                    this.lblPingResult.ForeColor = Color.Red;
                 }
-                catch
+                threshold = strToInt(editWarningTcpingThreshold.Text,int.MaxValue);
+                if (checkBoxTcpingWarning.Checked && tcpresult.Average() > threshold)
                 {
-
+                    timeout += "Tcping ";
+                    this.lblTcpingResult.ForeColor = Color.Red;
                 }
-
-                try
+                threshold = strToInt(editWarningGoogleThreshold.Text,int.MaxValue);
+                if (checkBoxGoogleWarning.Checked && googleresult.Average() > threshold)
                 {
-                    int threshold = Int32.Parse(editWarningTcpingThreshold.Text);
-                    if (tcpresult.Average() >= threshold && checkBoxTcping.Checked == true)
-                    {
-                        timeout += "Tcping ";
-                        this.lblTcpingResult.ForeColor = Color.Red;
-                    }
+                    timeout += "Google ";
+                    this.lblGoogleResult.ForeColor = Color.Red;
                 }
-                catch
-                {
-
-                }
-                try
-                {
-                    int threshold = Int32.Parse(editWarningGoogleThreshold.Text);
-                    if (googleresult.Average() >= threshold && checkBoxGoogle.Checked == true)
-                    {
-                        timeout += "Google ";
-                        this.lblGoogleResult.ForeColor = Color.Red;
-                    }
-                }
-                catch
-                {
-
-                }
+               
                 if (timeout != "")
                 {
                     this.notifyIcon.ShowBalloonTip(1000, "警告", timeout + "超时", ToolTipIcon.Info);
                 }
                 this.lblPingResult.Text = pingresult.Min() + "/" + pingresult.Max() + "/" + pingresult.Average() + "ms";
+                pingseries.Points.AddXY(updatetime, pingresult.Average());
                 this.lblTcpingResult.Text = tcpresult.Min() + "/" + tcpresult.Max() + "/" + tcpresult.Average() + "ms";
-                this.lblGoogleResult.Text = googleresult.Min() + "/" + googleresult.Max() + "/" + googleresult.Average() + "ms";
-                updatetime = updatetime.Split(' ')[1];
-                pingseries.Points.AddXY(updatetime,pingresult.Average());
                 tcpingseries.Points.AddXY(updatetime, tcpresult.Average());
+                this.lblGoogleResult.Text = googleresult.Min() + "/" + googleresult.Max() + "/" + googleresult.Average() + "ms";
                 googleseries.Points.AddXY(updatetime, googleresult.Average());
                 if (pingseries.Points.Count > chtPing.ChartAreas[0].AxisX.ScaleView.Size)
                 {
                     chtPing.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtPing.ChartAreas[0].AxisX.ScaleView.Size;
                 }
                 chtPing.Invalidate();
-                using (StreamWriter sw = new StreamWriter("record.log",true))
+                using (StreamWriter sw = new StreamWriter("record.log", true))
                 {
-                     sw.WriteLine(String.Format("{0},{1:#.00},{2:#.00},{3:#.00}",updatetime, pingresult.Average(), tcpresult.Average(), googleresult.Average()));
+                    sw.WriteLine(String.Format("{0},{1:#.00},{2:#.00},{3:#.00}", updatetime, pingresult.Average(), tcpresult.Average(), googleresult.Average()));
                 }
             }
             else
@@ -291,84 +314,110 @@ namespace networkanalyzer
                 {
                     break;
                 }
-                string server_ip = editServerIPPort.Text.Split(':')[0];
-                int server_port = 0;
-                try
-                {
-                    server_port = Int32.Parse(editServerIPPort.Text.Split(':')[1]);
-                }
-                catch
-                {
-                    MessageBox.Show("server port error", "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
-                }
-                string MyProxyHostString = editLocalIPPort.Text.Split(':')[0];
+
+                string server_ip="";
+                int server_port=0;
+                string MyProxyHostString="";
                 int MyProxyPort = 0;
-                try
+                int interval = strToInt(editCheckInterval.Text,10);
+                int averagetimes = strToInt(editAverageTimes.Text,3);
+                if (interval < 1 ||  interval > 100)
                 {
-                    MyProxyPort = Int32.Parse(editLocalIPPort.Text.Split(':')[1]);
-                }
-                catch
-                {
-                    MessageBox.Show("proxy port error", "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    errorNotice("间隔不推荐");
                     break;
                 }
-                int addresslength = 0;
-                string ip;
-                try
+                if (checkBoxPingOn.Checked == true || checkBoxTcpingOn.Checked == true)
                 {
-                    IPHostEntry hostEntry;
-                    hostEntry = Dns.GetHostEntry(server_ip);
-                    ip = hostEntry.AddressList[0].ToString();
-                    addresslength = hostEntry.AddressList.Length;
+                    if (editServerIPPort.Text.Split(':').Length != 2)
+                    {
+                        errorNotice("服务器IP:端口错误");
+                        break;
+                    }
+                    server_ip = editServerIPPort.Text.Split(':')[0];
+                    server_port = strToInt(editServerIPPort.Text.Split(':')[1],-1);
+                    if (server_port == -1)
+                    {
+                        errorNotice("服务器端口错误");
+                        break;
+                    }
                 }
-                catch
+                if (checkBoxGoogleOn.Checked)
                 {
-                    MessageBox.Show("dns resovle error", "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (editLocalIPPort.Text.Split(':').Length != 2)
+                    {
+                        errorNotice("代理IP:端口错误");
+                        break;
+                    }
+                    MyProxyHostString = editLocalIPPort.Text.Split(':')[0];
+                    MyProxyPort = strToInt(editLocalIPPort.Text.Split(':')[1],-1);
+                    if (MyProxyPort == -1)
+                    {
+                        errorNotice("代理端口错误");
+                        break;
+                    } 
+                }
+
+                string ip;
+                ip = this.GetReverseDNS(server_ip,1000);
+                IPAddress IP;
+                bool flag = IPAddress.TryParse(ip, out IP);
+                if (!flag)
+                {
+                    errorNotice("服务器IP或域名错误");
                     break;
                 }
 
                 //ping
                 var pingtimes = new List<double>();
-                Ping ping = new Ping();
-
-                for (int j = 0; j < 4; j++)
+                if (checkBoxPingOn.Checked)
                 {
-                    PingReply pingReply = ping.Send(ip,2000);
-                    if (pingReply.Status == IPStatus.Success)
+                    Ping ping = new Ping();
+
+                    for (int j = 0; j < averagetimes; j++)
                     {
-                        pingtimes.Add(pingReply.RoundtripTime);
+                        PingReply pingReply = ping.Send(ip, 2000);
+                        if (pingReply.Status == IPStatus.Success)
+                        {
+                            pingtimes.Add(pingReply.RoundtripTime);
+                        }
+                        else
+                        {
+                            pingtimes.Add(2000);
+                        }
                     }
-                    else
-                    {
-                        pingtimes.Add(2000);
-                    }
+                }
+                else
+                {
+                    pingtimes.Add(0);
                 }
 
 
                 //tcping
                 var tcptimes = new List<double>();
-                if (addresslength > 0)
+                if (checkBoxTcpingOn.Checked)
                 {
-                    IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), server_port);
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < averagetimes; j++)
                     {
                         try
                         {
-                            var sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                            sock.Blocking = true;
-
+                            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                             var tcpstopwatch = new Stopwatch();
-
-                            // Measure the Connect call only
                             tcpstopwatch.Start();
-                            sock.Connect(endPoint);
+                            IAsyncResult result = socket.BeginConnect(IP,server_port, null, null);
+                            bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+                            if (socket.Connected)
+                            {
+                                socket.EndConnect(result);
+                            }
+                            else
+                            {
+                                socket.Close();
+                                throw new ApplicationException("Failed to connect server.");
+                            }
                             tcpstopwatch.Stop();
-
                             double tcpt = tcpstopwatch.Elapsed.TotalMilliseconds;
                             tcptimes.Add(tcpt);
-
-                            sock.Close();
+                            Console.WriteLine(tcpt);
                         }
                         catch
                         {
@@ -376,37 +425,49 @@ namespace networkanalyzer
                         }
                     }
                 }
-              
+                else
+                {
+                    tcptimes.Add(0);
+                }
+
+
                 //调用Form对象的Invoke或BeginInvoke方法
                 //传入的委托, 将会在UI线程中执行
 
                 //google ping
                 var googletimes = new List<double>();
-                for (int j = 0; j < 4; j++)
+                if (checkBoxGoogleOn.Checked)
                 {
-                    try
+                    for (int j = 0; j < averagetimes; j++)
                     {
-                        HttpWebRequest request = WebRequest.Create("https://www.google.com") as HttpWebRequest;
-                        request.Proxy = new WebProxy(MyProxyHostString, MyProxyPort);
-                        request.Method = "GET";
-                        request.Timeout = 5000;
-                        request.KeepAlive = false;
-                        var googlestopwatch = new Stopwatch();
-                        googlestopwatch.Start();
-                        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                        googlestopwatch.Stop();
-                        double googlet = googlestopwatch.Elapsed.TotalMilliseconds;
-                        googletimes.Add(googlet);
-                    }
-                    catch
-                    {
-                        googletimes.Add(2000);
+                        try
+                        {
+                            HttpWebRequest request = WebRequest.Create("https://www.google.com") as HttpWebRequest;
+                            request.Proxy = new WebProxy(MyProxyHostString, MyProxyPort);
+                            request.Method = "GET";
+                            request.Timeout = 2000;
+                            request.KeepAlive = false;
+                            var googlestopwatch = new Stopwatch();
+                            googlestopwatch.Start();
+                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                            googlestopwatch.Stop();
+                            double googlet = googlestopwatch.Elapsed.TotalMilliseconds;
+                            googletimes.Add(googlet);
+                        }
+                        catch
+                        {
+                            googletimes.Add(2000);
+                        }
                     }
                 }
-                this.BeginInvoke(updator, 1, strT,pingtimes,tcptimes, googletimes) ;
-                Thread.Sleep(60000);
+                else
+                {
+                    googletimes.Add(0);
+                }
+                this.BeginInvoke(updator, 1, strT, pingtimes, tcptimes, googletimes);
+                Thread.Sleep(interval*1000);
             }
-            this.BeginInvoke(updator,0 ,"-", null, null, null);
+            this.BeginInvoke(updator, 0, "-", null, null, null);
         }
 
         private void notifyIcon_MouseMove(object sender, MouseEventArgs e)
@@ -489,6 +550,79 @@ namespace networkanalyzer
         private void toolStripButtonAbout_Click(object sender, EventArgs e)
         {
             MessageBox.Show("© 2020 Alfyn. All Rights Reserved", "关于", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private delegate IPHostEntry GetHostEntryHandler(string ip);
+        public string GetReverseDNS(string ip, int timeout)
+        {
+            try
+            {
+                GetHostEntryHandler callback = new GetHostEntryHandler(Dns.GetHostEntry);
+                IAsyncResult result = callback.BeginInvoke(ip, null, null);
+                if (result.AsyncWaitHandle.WaitOne(timeout, false))
+                {
+                    return callback.EndInvoke(result).AddressList[0].ToString();
+                }
+                else
+                {
+                    return ip;
+                }
+            }
+            catch (Exception)
+            {
+                return ip;
+            }
+        }
+
+        private void onlyNumber(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void errorNotice(string e)
+        {
+            MessageBox.Show(e, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private int strToInt(string s,int df)
+        {
+            try
+            {
+                Console.WriteLine("1");
+                return Int32.Parse(s);
+            }
+            catch
+            {
+                return df;
+            }
+        }
+
+        private void editAverageTimes_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            onlyNumber(sender,e);
+        }
+
+        private void editCheckInterval_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            onlyNumber(sender, e);
+        }
+
+        private void editWarningPingThreshold_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            onlyNumber(sender, e);
+        }
+
+        private void editWarningTcpingThreshold_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            onlyNumber(sender, e);
+        }
+
+        private void editWarningGoogleThreshold_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            onlyNumber(sender, e);
         }
     }
 }
