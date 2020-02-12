@@ -56,6 +56,7 @@ namespace networkanalyzer
             this.notifyIcon.ContextMenuStrip.Items.Add("Start", null, this.notifyIconMenuStart_Click);
             this.notifyIcon.ContextMenuStrip.Items.Add("Exit", null, this.notifyIconMenuExit_Click);
            
+            //read setting
             var MyIni = new IniFile("Settings.ini");
             this.editLocalIPPort.Text = MyIni.Read("local_ip_port", "basic");
             this.editServerIPPort.Text = MyIni.Read("server_ip_port", "basic");
@@ -113,49 +114,29 @@ namespace networkanalyzer
             }
             this.editAverageTimes.Text = MyIni.Read("average_times", "monitor");
 
-
-            this.chtPing.Series.Clear();
-            this.chtPing.Series.Add(pingseries);
-            this.chtPing.Series.Add(tcpingseries);
-            this.chtPing.Series.Add(googleseries);
-            this.chtPing.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
-            this.chtPing.ChartAreas[0].AxisX.LabelStyle.Angle = -80;
-            this.chtPing.ChartAreas[0].AxisX.LineWidth = 2;
-            this.chtPing.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
-            this.chtPing.ChartAreas[0].AxisX.Interval = 1;
-            this.chtPing.ChartAreas[0].CursorX.AutoScroll = true;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.Size = 20;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.Zoom(0, 20);
-            this.chtPing.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-            this.chtPing.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = 20;
-            this.chtPing.Series["Ping"].MarkerSize = 5;
-            this.chtPing.Series["Ping"].MarkerStyle = MarkerStyle.Circle;
-            this.chtPing.Series["Tcping"].MarkerSize = 5;
-            this.chtPing.Series["Tcping"].MarkerStyle = MarkerStyle.Circle;
-            this.chtPing.Series["Google"].MarkerSize = 5;
-            this.chtPing.Series["Google"].MarkerStyle = MarkerStyle.Circle;
-        }
-
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.Hide();
-                this.ShowInTaskbar = false;
-            }
-        }
-
-
-        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.Show();
-                this.WindowState = FormWindowState.Normal;
-                this.ShowInTaskbar = true;
-            }
+            //chart init
+            this.chtRecord.Series.Clear();
+            this.chtRecord.Series.Add(pingseries);
+            this.chtRecord.Series.Add(tcpingseries);
+            this.chtRecord.Series.Add(googleseries);
+            this.chtRecord.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+            this.chtRecord.ChartAreas[0].AxisX.LabelStyle.Angle = -80;
+            this.chtRecord.ChartAreas[0].AxisX.LineWidth = 2;
+            this.chtRecord.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            this.chtRecord.ChartAreas[0].AxisX.Interval = 1;
+            this.chtRecord.ChartAreas[0].CursorX.AutoScroll = true;
+            this.chtRecord.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+            this.chtRecord.ChartAreas[0].AxisX.ScaleView.Size = 20;
+            this.chtRecord.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
+            this.chtRecord.ChartAreas[0].AxisX.ScaleView.Zoom(0, 20);
+            this.chtRecord.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+            this.chtRecord.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = 20;
+            this.chtRecord.Series["Ping"].MarkerSize = 5;
+            this.chtRecord.Series["Ping"].MarkerStyle = MarkerStyle.Circle;
+            this.chtRecord.Series["Tcping"].MarkerSize = 5;
+            this.chtRecord.Series["Tcping"].MarkerStyle = MarkerStyle.Circle;
+            this.chtRecord.Series["Google"].MarkerSize = 5;
+            this.chtRecord.Series["Google"].MarkerStyle = MarkerStyle.Circle;
         }
 
         private void save_setting()
@@ -189,8 +170,8 @@ namespace networkanalyzer
             {
                 this.toolStripStatusLblStatusResult.Text = "运行中";
                 this.notifyIcon.ContextMenuStrip.Items[0].Text = "Stop";
-                this.runToolStripMenuItem.Enabled = false;
-                this.stopToolStripMenuItem.Enabled = true;
+                this.toolStripMenuItemRun.Enabled = false;
+                this.toolStripMenuItemStop.Enabled = true;
                 this.toolStripDropDownButtonData.Enabled = false;
                 this.editCheckInterval.Enabled = false;
                 this.editLocalIPPort.Enabled = false;
@@ -201,8 +182,8 @@ namespace networkanalyzer
             {
                 this.toolStripStatusLblStatusResult.Text = "已停止";
                 this.notifyIcon.ContextMenuStrip.Items[0].Text = "Start";
-                this.runToolStripMenuItem.Enabled = true;
-                this.stopToolStripMenuItem.Enabled = false;
+                this.toolStripMenuItemRun.Enabled = true;
+                this.toolStripMenuItemStop.Enabled = false;
                 this.toolStripDropDownButtonData.Enabled = true;
                 this.editCheckInterval.Enabled = true;
                 this.editLocalIPPort.Enabled = true;
@@ -214,8 +195,8 @@ namespace networkanalyzer
 
         private void monitor()
         {
-            this.runToolStripMenuItem.Enabled = false;
-            this.stopToolStripMenuItem.Enabled = false;
+            this.toolStripMenuItemRun.Enabled = false;
+            this.toolStripMenuItemStop.Enabled = false;
             this.toolStripDropDownButtonData.Enabled = false;
             this.editCheckInterval.Enabled = false;
             this.editLocalIPPort.Enabled = false;
@@ -283,11 +264,11 @@ namespace networkanalyzer
                 tcpingseries.Points.AddXY(updatetime, tcpresult.Average());
                 this.lblGoogleResult.Text = googleresult.Min() + "/" + googleresult.Max() + "/" + googleresult.Average() + "ms";
                 googleseries.Points.AddXY(updatetime, googleresult.Average());
-                if (pingseries.Points.Count > chtPing.ChartAreas[0].AxisX.ScaleView.Size)
+                if (pingseries.Points.Count > chtRecord.ChartAreas[0].AxisX.ScaleView.Size)
                 {
-                    chtPing.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtPing.ChartAreas[0].AxisX.ScaleView.Size;
+                    chtRecord.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtRecord.ChartAreas[0].AxisX.ScaleView.Size;
                 }
-                chtPing.Invalidate();
+                chtRecord.Invalidate();
                 using (StreamWriter sw = new StreamWriter("record.log", true))
                 {
                     sw.WriteLine(String.Format("{0},{1:#.00},{2:#.00},{3:#.00}", updatetime, pingresult.Average(), tcpresult.Average(), googleresult.Average()));
@@ -367,6 +348,12 @@ namespace networkanalyzer
                     break;
                 }
 
+                int processbarValue = 0;
+                ProcessMaxValueDelegate max = new ProcessMaxValueDelegate(setProcessBarMax);
+                this.Invoke(max, interval+3*averagetimes);
+                ProcessNowValueDelegate now = new ProcessNowValueDelegate(setProcessBarNow);
+                this.Invoke(now, processbarValue);
+
                 //ping
                 var pingtimes = new List<double>();
                 if (checkBoxPingOn.Checked)
@@ -384,11 +371,15 @@ namespace networkanalyzer
                         {
                             pingtimes.Add(2000);
                         }
+                        processbarValue += 1;
+                        this.Invoke(now, processbarValue);
                     }
                 }
                 else
                 {
                     pingtimes.Add(0);
+                    processbarValue += averagetimes;
+                    this.Invoke(now, processbarValue);
                 }
 
 
@@ -423,11 +414,15 @@ namespace networkanalyzer
                         {
                             tcptimes.Add(2000);
                         }
+                        processbarValue += 1;
+                        this.Invoke(now, processbarValue);
                     }
                 }
                 else
                 {
                     tcptimes.Add(0);
+                    processbarValue += averagetimes;
+                    this.Invoke(now, processbarValue);
                 }
 
 
@@ -458,16 +453,46 @@ namespace networkanalyzer
                         {
                             googletimes.Add(2000);
                         }
+                        processbarValue += 1;
+                        this.Invoke(now, processbarValue);
                     }
                 }
                 else
                 {
                     googletimes.Add(0);
+                    processbarValue += averagetimes;
+                    this.Invoke(now, processbarValue);
+                }
+                for (int j = 0; j < interval; j++)
+                {
+                    Thread.Sleep(1000);
+                    processbarValue += 1;
+                    this.Invoke(now, processbarValue);
                 }
                 this.BeginInvoke(updator, 1, strT, pingtimes, tcptimes, googletimes);
-                Thread.Sleep(interval*1000);
             }
             this.BeginInvoke(updator, 0, "-", null, null, null);
+        }
+
+
+        //tray funtion
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+                this.ShowInTaskbar = false;
+            }
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.ShowInTaskbar = true;
+            }
         }
 
         private void notifyIcon_MouseMove(object sender, MouseEventArgs e)
@@ -492,8 +517,8 @@ namespace networkanalyzer
             Application.Exit();
         }
 
-
-        private void readLogToolStripMenuItem_Click(object sender, EventArgs e)
+        //tool strip
+        private void toolStripMenuItemReadLog_Click(object sender, EventArgs e)
         {
             pingseries.Points.Clear();
             tcpingseries.Points.Clear();
@@ -507,16 +532,16 @@ namespace networkanalyzer
                     pingseries.Points.AddXY(data[0], data[1]);
                     tcpingseries.Points.AddXY(data[0], data[2]);
                     googleseries.Points.AddXY(data[0], data[3]);
-                    chtPing.Invalidate();
+                    chtRecord.Invalidate();
                 }
             }
-            if (pingseries.Points.Count > chtPing.ChartAreas[0].AxisX.ScaleView.Size)
+            if (pingseries.Points.Count > chtRecord.ChartAreas[0].AxisX.ScaleView.Size)
             {
-                chtPing.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtPing.ChartAreas[0].AxisX.ScaleView.Size;
+                chtRecord.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtRecord.ChartAreas[0].AxisX.ScaleView.Size;
             }
         }
 
-        private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemClearLog_Click(object sender, EventArgs e)
         {
             DialogResult dr = MessageBox.Show("确定清空?", "清空", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dr == DialogResult.OK)//如果点击“确定”按钮
@@ -528,21 +553,21 @@ namespace networkanalyzer
             }
         }
 
-        private void clearDataToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemClearData_Click(object sender, EventArgs e)
         {
             pingseries.Points.Clear();
             tcpingseries.Points.Clear();
             googleseries.Points.Clear();
-            chtPing.ChartAreas[0].AxisX.ScaleView.Position = 0;
-            chtPing.Invalidate();
+            chtRecord.ChartAreas[0].AxisX.ScaleView.Position = 0;
+            chtRecord.Invalidate();
         }
 
-        private void runToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemRun_Click(object sender, EventArgs e)
         {
             monitor();
         }
 
-        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripMenuItemStop_Click(object sender, EventArgs e)
         {
             monitor();
         }
@@ -552,6 +577,8 @@ namespace networkanalyzer
             MessageBox.Show("© 2020 Alfyn. All Rights Reserved", "关于", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+
+        //other function
         private delegate IPHostEntry GetHostEntryHandler(string ip);
         public string GetReverseDNS(string ip, int timeout)
         {
@@ -572,6 +599,19 @@ namespace networkanalyzer
             {
                 return ip;
             }
+        }
+
+        private delegate void ProcessMaxValueDelegate(int maxValue);
+        private delegate void ProcessNowValueDelegate(int nowValue);
+
+        private void setProcessBarMax(int maxValue)
+        {
+            toolStripProgressBarInterval.Maximum = maxValue;
+        }
+
+        private void setProcessBarNow(int nowValue)
+        {
+            toolStripProgressBarInterval.Value = nowValue;
         }
 
         private void onlyNumber(object sender, KeyPressEventArgs e)

@@ -43,8 +43,10 @@
             this.toolStripStatusLblStatusResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblLastUpdateTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblLastUpdateTimeResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelBlank = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBarInterval = new System.Windows.Forms.ToolStripProgressBar();
             this.lblPingResult = new System.Windows.Forms.Label();
-            this.chtPing = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chtRecord = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBoxRecord = new System.Windows.Forms.GroupBox();
             this.groupBoxNowRecord = new System.Windows.Forms.GroupBox();
@@ -65,20 +67,20 @@
             this.editWarningPingThreshold = new System.Windows.Forms.TextBox();
             this.lblServerIPPort = new System.Windows.Forms.Label();
             this.editServerIPPort = new System.Windows.Forms.TextBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButtonRun = new System.Windows.Forms.ToolStripDropDownButton();
-            this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemStop = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButtonData = new System.Windows.Forms.ToolStripDropDownButton();
-            this.日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.readLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemLog = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemReadLog = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClearLog = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClearData = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtPing)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chtRecord)).BeginInit();
             this.groupBoxNowRecord.SuspendLayout();
             this.groupBoxSetting.SuspendLayout();
             this.groupBoxWarningThreshold.SuspendLayout();
@@ -135,7 +137,9 @@
             this.toolStripStatusLblStatus,
             this.toolStripStatusLblStatusResult,
             this.toolStripStatusLblLastUpdateTime,
-            this.toolStripStatusLblLastUpdateTimeResult});
+            this.toolStripStatusLblLastUpdateTimeResult,
+            this.toolStripStatusLabelBlank,
+            this.toolStripProgressBarInterval});
             this.statusStrip1.Location = new System.Drawing.Point(0, 413);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(915, 22);
@@ -166,6 +170,17 @@
             this.toolStripStatusLblLastUpdateTimeResult.Size = new System.Drawing.Size(13, 17);
             this.toolStripStatusLblLastUpdateTimeResult.Text = "-";
             // 
+            // toolStripStatusLabelBlank
+            // 
+            this.toolStripStatusLabelBlank.Name = "toolStripStatusLabelBlank";
+            this.toolStripStatusLabelBlank.Size = new System.Drawing.Size(593, 17);
+            this.toolStripStatusLabelBlank.Spring = true;
+            // 
+            // toolStripProgressBarInterval
+            // 
+            this.toolStripProgressBarInterval.Name = "toolStripProgressBarInterval";
+            this.toolStripProgressBarInterval.Size = new System.Drawing.Size(100, 16);
+            // 
             // lblPingResult
             // 
             this.lblPingResult.AutoSize = true;
@@ -175,23 +190,23 @@
             this.lblPingResult.TabIndex = 10;
             this.lblPingResult.Text = "-";
             // 
-            // chtPing
+            // chtRecord
             // 
             chartArea1.Name = "ChartArea1";
-            this.chtPing.ChartAreas.Add(chartArea1);
+            this.chtRecord.ChartAreas.Add(chartArea1);
             legend1.Enabled = false;
             legend1.Name = "Legend1";
-            this.chtPing.Legends.Add(legend1);
-            this.chtPing.Location = new System.Drawing.Point(396, 61);
-            this.chtPing.Name = "chtPing";
+            this.chtRecord.Legends.Add(legend1);
+            this.chtRecord.Location = new System.Drawing.Point(396, 61);
+            this.chtRecord.Name = "chtRecord";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series1.Legend = "Legend1";
             series1.Name = "Series1";
-            this.chtPing.Series.Add(series1);
-            this.chtPing.Size = new System.Drawing.Size(488, 338);
-            this.chtPing.TabIndex = 11;
-            this.chtPing.Text = "chtPing";
+            this.chtRecord.Series.Add(series1);
+            this.chtRecord.Size = new System.Drawing.Size(488, 338);
+            this.chtRecord.TabIndex = 11;
+            this.chtRecord.Text = "chtPing";
             // 
             // notifyIcon
             // 
@@ -398,10 +413,10 @@
             this.editServerIPPort.Size = new System.Drawing.Size(220, 21);
             this.editServerIPPort.TabIndex = 5;
             // 
-            // contextMenuStrip1
+            // contextMenuStrip
             // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            this.contextMenuStrip.Name = "contextMenuStrip1";
+            this.contextMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
             // toolStrip
             // 
@@ -419,70 +434,70 @@
             // 
             this.toolStripDropDownButtonRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButtonRun.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runToolStripMenuItem,
-            this.stopToolStripMenuItem});
+            this.toolStripMenuItemRun,
+            this.toolStripMenuItemStop});
             this.toolStripDropDownButtonRun.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonRun.Image")));
             this.toolStripDropDownButtonRun.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonRun.Name = "toolStripDropDownButtonRun";
             this.toolStripDropDownButtonRun.Size = new System.Drawing.Size(45, 22);
             this.toolStripDropDownButtonRun.Text = "运行";
             // 
-            // runToolStripMenuItem
+            // toolStripMenuItemRun
             // 
-            this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-            this.runToolStripMenuItem.Text = "运行";
-            this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+            this.toolStripMenuItemRun.Name = "toolStripMenuItemRun";
+            this.toolStripMenuItemRun.Size = new System.Drawing.Size(100, 22);
+            this.toolStripMenuItemRun.Text = "运行";
+            this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
             // 
-            // stopToolStripMenuItem
+            // toolStripMenuItemStop
             // 
-            this.stopToolStripMenuItem.Enabled = false;
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-            this.stopToolStripMenuItem.Text = "停止";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            this.toolStripMenuItemStop.Enabled = false;
+            this.toolStripMenuItemStop.Name = "toolStripMenuItemStop";
+            this.toolStripMenuItemStop.Size = new System.Drawing.Size(100, 22);
+            this.toolStripMenuItemStop.Text = "停止";
+            this.toolStripMenuItemStop.Click += new System.EventHandler(this.toolStripMenuItemStop_Click);
             // 
             // toolStripDropDownButtonData
             // 
             this.toolStripDropDownButtonData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButtonData.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.日志ToolStripMenuItem,
-            this.clearDataToolStripMenuItem});
+            this.toolStripMenuItemLog,
+            this.toolStripMenuItemClearData});
             this.toolStripDropDownButtonData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonData.Image")));
             this.toolStripDropDownButtonData.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonData.Name = "toolStripDropDownButtonData";
             this.toolStripDropDownButtonData.Size = new System.Drawing.Size(45, 22);
             this.toolStripDropDownButtonData.Text = "数据";
             // 
-            // 日志ToolStripMenuItem
+            // toolStripMenuItemLog
             // 
-            this.日志ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.readLogToolStripMenuItem,
-            this.clearLogToolStripMenuItem});
-            this.日志ToolStripMenuItem.Name = "日志ToolStripMenuItem";
-            this.日志ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.日志ToolStripMenuItem.Text = "日志";
+            this.toolStripMenuItemLog.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemReadLog,
+            this.toolStripMenuItemClearLog});
+            this.toolStripMenuItemLog.Name = "toolStripMenuItemLog";
+            this.toolStripMenuItemLog.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItemLog.Text = "日志";
             // 
-            // readLogToolStripMenuItem
+            // toolStripMenuItemReadLog
             // 
-            this.readLogToolStripMenuItem.Name = "readLogToolStripMenuItem";
-            this.readLogToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.readLogToolStripMenuItem.Text = "读取日志";
-            this.readLogToolStripMenuItem.Click += new System.EventHandler(this.readLogToolStripMenuItem_Click);
+            this.toolStripMenuItemReadLog.Name = "toolStripMenuItemReadLog";
+            this.toolStripMenuItemReadLog.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItemReadLog.Text = "读取日志";
+            this.toolStripMenuItemReadLog.Click += new System.EventHandler(this.toolStripMenuItemReadLog_Click);
             // 
-            // clearLogToolStripMenuItem
+            // toolStripMenuItemClearLog
             // 
-            this.clearLogToolStripMenuItem.Name = "clearLogToolStripMenuItem";
-            this.clearLogToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.clearLogToolStripMenuItem.Text = "清空日志";
-            this.clearLogToolStripMenuItem.Click += new System.EventHandler(this.clearLogToolStripMenuItem_Click);
+            this.toolStripMenuItemClearLog.Name = "toolStripMenuItemClearLog";
+            this.toolStripMenuItemClearLog.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItemClearLog.Text = "清空日志";
+            this.toolStripMenuItemClearLog.Click += new System.EventHandler(this.toolStripMenuItemClearLog_Click);
             // 
-            // clearDataToolStripMenuItem
+            // toolStripMenuItemClearData
             // 
-            this.clearDataToolStripMenuItem.Name = "clearDataToolStripMenuItem";
-            this.clearDataToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.clearDataToolStripMenuItem.Text = "清除数据";
-            this.clearDataToolStripMenuItem.Click += new System.EventHandler(this.clearDataToolStripMenuItem_Click);
+            this.toolStripMenuItemClearData.Name = "toolStripMenuItemClearData";
+            this.toolStripMenuItemClearData.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItemClearData.Text = "清除数据";
+            this.toolStripMenuItemClearData.Click += new System.EventHandler(this.toolStripMenuItemClearData_Click);
             // 
             // toolStripButtonAbout
             // 
@@ -502,7 +517,7 @@
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.groupBoxSetting);
             this.Controls.Add(this.groupBoxNowRecord);
-            this.Controls.Add(this.chtPing);
+            this.Controls.Add(this.chtRecord);
             this.Controls.Add(this.groupBoxRecord);
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -512,7 +527,7 @@
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtPing)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chtRecord)).EndInit();
             this.groupBoxNowRecord.ResumeLayout(false);
             this.groupBoxNowRecord.PerformLayout();
             this.groupBoxSetting.ResumeLayout(false);
@@ -539,12 +554,12 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblStatus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblStatusResult;
         private System.Windows.Forms.Label lblPingResult;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chtPing;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chtRecord;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.GroupBox groupBoxRecord;
         private System.Windows.Forms.GroupBox groupBoxNowRecord;
         private System.Windows.Forms.GroupBox groupBoxSetting;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.Label lblServerIPPort;
         private System.Windows.Forms.TextBox editServerIPPort;
         private System.Windows.Forms.TextBox editWarningPingThreshold;
@@ -556,13 +571,13 @@
         private System.Windows.Forms.TextBox editWarningTcpingThreshold;
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonData;
-        private System.Windows.Forms.ToolStripMenuItem 日志ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem readLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemLog;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemReadLog;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClearLog;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClearData;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonRun;
-        private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRun;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemStop;
         private System.Windows.Forms.ToolStripButton toolStripButtonAbout;
         private System.Windows.Forms.CheckBox checkBoxGoogleOn;
         private System.Windows.Forms.CheckBox checkBoxTcpingOn;
@@ -572,6 +587,8 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lblAverageTimes;
         private System.Windows.Forms.TextBox editAverageTimes;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBarInterval;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelBlank;
     }
 }
 
