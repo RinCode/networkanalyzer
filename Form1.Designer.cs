@@ -520,8 +520,10 @@
             this.Controls.Add(this.chtRecord);
             this.Controls.Add(this.groupBoxRecord);
             this.Controls.Add(this.statusStrip1);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "NetworkAnalyzer";
             this.Text = "NetworkAnalyzer";
             this.Resize += new System.EventHandler(this.Form1_Resize);

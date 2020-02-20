@@ -236,19 +236,19 @@ namespace networkanalyzer
                 int threshold;
                 threshold = strToInt(editWarningPingThreshold.Text,int.MaxValue);
                 Console.WriteLine(threshold);
-                if (checkBoxPingWarning.Checked && pingresult.Average() > threshold)
+                if (checkBoxPingWarning.Checked && pingresult.Average() > threshold && pingresult.Average()!=2000)
                 {
                     timeout += "Ping ";
                     this.lblPingResult.ForeColor = Color.Red;
                 }
                 threshold = strToInt(editWarningTcpingThreshold.Text,int.MaxValue);
-                if (checkBoxTcpingWarning.Checked && tcpresult.Average() > threshold)
+                if (checkBoxTcpingWarning.Checked && tcpresult.Average() > threshold && tcpresult.Average() != 2000)
                 {
                     timeout += "Tcping ";
                     this.lblTcpingResult.ForeColor = Color.Red;
                 }
                 threshold = strToInt(editWarningGoogleThreshold.Text,int.MaxValue);
-                if (checkBoxGoogleWarning.Checked && googleresult.Average() > threshold)
+                if (checkBoxGoogleWarning.Checked && googleresult.Average() > threshold && googleresult.Average() != 2000)
                 {
                     timeout += "Google ";
                     this.lblGoogleResult.ForeColor = Color.Red;
