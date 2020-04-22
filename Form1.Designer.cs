@@ -116,7 +116,7 @@
             // lblTcpingResult
             // 
             this.lblTcpingResult.AutoSize = true;
-            this.lblTcpingResult.Location = new System.Drawing.Point(18, 94);
+            this.lblTcpingResult.Location = new System.Drawing.Point(18, 89);
             this.lblTcpingResult.Name = "lblTcpingResult";
             this.lblTcpingResult.Size = new System.Drawing.Size(11, 12);
             this.lblTcpingResult.TabIndex = 5;
@@ -184,7 +184,7 @@
             // lblPingResult
             // 
             this.lblPingResult.AutoSize = true;
-            this.lblPingResult.Location = new System.Drawing.Point(18, 51);
+            this.lblPingResult.Location = new System.Drawing.Point(18, 39);
             this.lblPingResult.Name = "lblPingResult";
             this.lblPingResult.Size = new System.Drawing.Size(11, 12);
             this.lblPingResult.TabIndex = 10;
@@ -192,6 +192,7 @@
             // 
             // chtRecord
             // 
+            this.chtRecord.BackColor = System.Drawing.Color.Transparent;
             chartArea1.Name = "ChartArea1";
             this.chtRecord.ChartAreas.Add(chartArea1);
             legend1.Enabled = false;
@@ -207,6 +208,8 @@
             this.chtRecord.Size = new System.Drawing.Size(488, 338);
             this.chtRecord.TabIndex = 11;
             this.chtRecord.Text = "chtPing";
+            this.chtRecord.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chtRecord_GetToolTipText);
+            this.chtRecord.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chtRecord_AxisViewChanged);
             // 
             // notifyIcon
             // 
@@ -254,7 +257,7 @@
             // checkBoxTcpingOn
             // 
             this.checkBoxTcpingOn.AutoSize = true;
-            this.checkBoxTcpingOn.Location = new System.Drawing.Point(17, 75);
+            this.checkBoxTcpingOn.Location = new System.Drawing.Point(17, 70);
             this.checkBoxTcpingOn.Name = "checkBoxTcpingOn";
             this.checkBoxTcpingOn.Size = new System.Drawing.Size(60, 16);
             this.checkBoxTcpingOn.TabIndex = 12;
@@ -264,7 +267,7 @@
             // checkBoxPingOn
             // 
             this.checkBoxPingOn.AutoSize = true;
-            this.checkBoxPingOn.Location = new System.Drawing.Point(17, 32);
+            this.checkBoxPingOn.Location = new System.Drawing.Point(17, 20);
             this.checkBoxPingOn.Name = "checkBoxPingOn";
             this.checkBoxPingOn.Size = new System.Drawing.Size(48, 16);
             this.checkBoxPingOn.TabIndex = 11;

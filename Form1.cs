@@ -23,6 +23,9 @@ namespace networkanalyzer
         private List<double> pingresult;
         private List<double> tcpresult;
         private List<double> googleresult;
+        private List<double> pingrecord = new List<double>();
+        private List<double> tcprecord = new List<double>();
+        private List<double> googlerecord= new List<double>();
         Series pingseries = new System.Windows.Forms.DataVisualization.Charting.Series
         {
             Name = "Ping",
@@ -136,7 +139,7 @@ namespace networkanalyzer
             this.chtRecord.Series["Tcping"].MarkerSize = 5;
             this.chtRecord.Series["Tcping"].MarkerStyle = MarkerStyle.Circle;
             this.chtRecord.Series["Google"].MarkerSize = 5;
-            this.chtRecord.Series["Google"].MarkerStyle = MarkerStyle.Circle;
+            this.chtRecord.Series["Google"].MarkerStyle = MarkerStyle.Circle; 
         }
 
         private void save_setting()
@@ -156,6 +159,21 @@ namespace networkanalyzer
             MyIni.Write("interval", editCheckInterval.Text, "monitor");
             MyIni.Write("average_times", editAverageTimes.Text, "monitor");
             MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void chtRecord_GetToolTipText(object sender, ToolTipEventArgs e)
+        {
+            if (e.HitTestResult.ChartElementType == ChartElementType.DataPoint)
+            {
+                this.Cursor = Cursors.Cross;
+                int i = e.HitTestResult.PointIndex;
+                DataPoint dp = e.HitTestResult.Series.Points[i];
+                e.Text = String.Format("{0},{1:#.00}", e.HitTestResult.Series.Name, dp.YValues[0]);
+            }
+            else
+            {
+                this.Cursor = Cursors.Default;
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -235,7 +253,6 @@ namespace networkanalyzer
                 string timeout = "";
                 int threshold;
                 threshold = strToInt(editWarningPingThreshold.Text,int.MaxValue);
-                Console.WriteLine(threshold);
                 if (checkBoxPingWarning.Checked && pingresult.Average() > threshold && pingresult.Average()!=2000)
                 {
                     timeout += "Ping ";
@@ -258,12 +275,27 @@ namespace networkanalyzer
                 {
                     this.notifyIcon.ShowBalloonTip(1000, "警告", timeout + "超时", ToolTipIcon.Info);
                 }
-                this.lblPingResult.Text = pingresult.Min() + "/" + pingresult.Max() + "/" + pingresult.Average() + "ms";
+
+                if (pingresult.Average() != 0)
+                {
+                    this.pingrecord.Add(pingresult.Average());
+                }
+                if (tcpresult.Average() != 0)
+                {
+                    this.tcprecord.Add(tcpresult.Average());
+                }
+                if (googleresult.Average() != 0)
+                {
+                    this.googlerecord.Add(googleresult.Average());
+                }
                 pingseries.Points.AddXY(updatetime, pingresult.Average());
-                this.lblTcpingResult.Text = tcpresult.Min() + "/" + tcpresult.Max() + "/" + tcpresult.Average() + "ms";
                 tcpingseries.Points.AddXY(updatetime, tcpresult.Average());
-                this.lblGoogleResult.Text = googleresult.Min() + "/" + googleresult.Max() + "/" + googleresult.Average() + "ms";
                 googleseries.Points.AddXY(updatetime, googleresult.Average());
+
+                ShowResult(pingresult.Min(),pingresult.Max(),pingresult.Average(),
+                    tcpresult.Min(),tcpresult.Max(),tcpresult.Average(),
+                    googleresult.Min(),googleresult.Max(),googleresult.Average());
+                
                 if (pingseries.Points.Count > chtRecord.ChartAreas[0].AxisX.ScaleView.Size)
                 {
                     chtRecord.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtRecord.ChartAreas[0].AxisX.ScaleView.Size;
@@ -278,6 +310,20 @@ namespace networkanalyzer
             {
                 this.status_change_check(false);
             }
+        }
+
+        private void ShowResult(double pmin,double pmax,double pavg, double tmin, double tmax, double tavg, double gmin, double gmax, double gavg)
+        {
+            
+            double pingrecordmean = this.pingrecord.Count() == 0 ? 0 : this.pingrecord.Average();
+            double pingrecordstdev = this.pingrecord.Count() == 0 ? 0 : CalculateStandardDeviation(this.pingrecord);
+            double tcprecordmean = this.tcprecord.Count() == 0 ? 0 : this.tcprecord.Average();
+            double tcprecordstdev = this.tcprecord.Count() == 0 ? 0 : CalculateStandardDeviation(this.tcprecord);
+            double googlerecordmean = this.googlerecord.Count() == 0 ? 0 : this.googlerecord.Average();
+            double googlerecordstdev = this.googlerecord.Count() == 0 ? 0 : CalculateStandardDeviation(this.googlerecord);
+            this.lblPingResult.Text = String.Format("Currrent: {0:#0.00}ms/{1:#0.00}ms/{2:#0.00}ms\n Total mean: {3:#0.00}ms, stdev: {4:#0.00}", pmin,pmax,pavg,pingrecordmean,pingrecordstdev);
+            this.lblTcpingResult.Text = String.Format("Currrent: {0:#0.00}ms/{1:#0.00}ms/{2:#0.00}ms\n Total mean: {3:#0.00}ms, stdev: {4:#0.00}",tmin, tmax, tavg, tcprecordmean, tcprecordstdev);
+            this.lblGoogleResult.Text = String.Format("Currrent: {0:#0.00}ms/{1:#0.00}ms/{2:#0.00}ms\n Total mean: {3:#0.00}ms, stdev: {4:#0.00}", gmin, gmax, gavg, googlerecordmean, googlerecordstdev);
         }
 
         private void DoInBackgroundThread(object state)
@@ -408,7 +454,6 @@ namespace networkanalyzer
                             tcpstopwatch.Stop();
                             double tcpt = tcpstopwatch.Elapsed.TotalMilliseconds;
                             tcptimes.Add(tcpt);
-                            Console.WriteLine(tcpt);
                         }
                         catch
                         {
@@ -499,7 +544,7 @@ namespace networkanalyzer
         {
             try
             {
-                notifyIcon.Text = String.Format("Ping:{0:#.00}ms\nTcp:{1:#.00}ms\nGoogle:{2:#.00}ms", this.pingresult.Average(), this.tcpresult.Average(), this.googleresult.Average());
+                notifyIcon.Text = String.Format("Ping:{0:#0.00}ms\nTcp:{1:#0.00}ms\nGoogle:{2:#0.00}ms", this.pingresult.Average(), this.tcpresult.Average(), this.googleresult.Average());
             }
             catch
             {
@@ -523,21 +568,52 @@ namespace networkanalyzer
             pingseries.Points.Clear();
             tcpingseries.Points.Clear();
             googleseries.Points.Clear();
+            pingrecord.Clear();
+            tcprecord.Clear();
+            googlerecord.Clear();
             string line;
             using (StreamReader sr = new StreamReader("record.log"))
             {
                 while ((line = sr.ReadLine()) != null)
                 {
                     var data = line.Split(',');
+                    double ping = Convert.ToDouble(data[1]);
+                    double tcp = Convert.ToDouble(data[2]);
+                    double google = Convert.ToDouble(data[3]);
                     pingseries.Points.AddXY(data[0], data[1]);
                     tcpingseries.Points.AddXY(data[0], data[2]);
                     googleseries.Points.AddXY(data[0], data[3]);
+                    if (ping != 0) pingrecord.Add(ping);
+                    if (tcp != 0) tcprecord.Add(tcp);
+                    if (google != 0) googlerecord.Add(google);
                     chtRecord.Invalidate();
                 }
             }
+            ShowResult(0,0,0,0,0,0,0,0,0);
             if (pingseries.Points.Count > chtRecord.ChartAreas[0].AxisX.ScaleView.Size)
             {
                 chtRecord.ChartAreas[0].AxisX.ScaleView.Position = pingseries.Points.Count - chtRecord.ChartAreas[0].AxisX.ScaleView.Size;
+            }
+        }
+
+
+        private void chtRecord_AxisViewChanged(object sender, ViewEventArgs e)
+        {
+            if (e.Axis.AxisName == AxisName.X)
+            {
+                int start = (int)e.Axis.ScaleView.ViewMinimum;
+                int end = (int)e.Axis.ScaleView.ViewMaximum;
+
+                double[] ping = chtRecord.Series["Ping"].Points.Where((x, i) => i >= start && i <= end).Select(x => x.YValues[0]).ToArray();
+                double[] tcping= chtRecord.Series["Tcping"].Points.Where((x, i) => i >= start && i <= end).Select(x => x.YValues[0]).ToArray();
+                double[] google = chtRecord.Series["Google"].Points.Where((x, i) => i >= start && i <= end).Select(x => x.YValues[0]).ToArray();
+                double ymax = Math.Max(ping.Max(), tcping.Max());
+                ymax = Math.Max(ymax, google.Max());
+                double ymin = Math.Min(ping.Min(), tcping.Min());
+                ymin = Math.Min(ymax, google.Min());
+
+                chtRecord.ChartAreas[0].AxisY.ScaleView.Position = ymin;
+                chtRecord.ChartAreas[0].AxisY.ScaleView.Size = ymax - ymin + 20;
             }
         }
 
@@ -558,6 +634,10 @@ namespace networkanalyzer
             pingseries.Points.Clear();
             tcpingseries.Points.Clear();
             googleseries.Points.Clear();
+            pingrecord.Clear();
+            tcprecord.Clear();
+            googlerecord.Clear();
+            ShowResult(0, 0, 0, 0, 0, 0, 0, 0, 0);
             chtRecord.ChartAreas[0].AxisX.ScaleView.Position = 0;
             chtRecord.Invalidate();
         }
@@ -574,7 +654,7 @@ namespace networkanalyzer
 
         private void toolStripButtonAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("© 2020 Alfyn. All Rights Reserved", "关于", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("https://github.com/alfyn \n© 2020 Alfyn. All Rights Reserved.", "关于", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -631,13 +711,31 @@ namespace networkanalyzer
         {
             try
             {
-                Console.WriteLine("1");
                 return Int32.Parse(s);
             }
             catch
             {
                 return df;
             }
+        }
+
+        private double CalculateStandardDeviation(IEnumerable<double> values)
+        {
+            double standardDeviation = 0;
+
+            if (values.Any())
+            {
+                // Compute the average.     
+                double avg = values.Average();
+
+                // Perform the Sum of (value-avg)_2_2.      
+                double sum = values.Sum(d => Math.Pow(d - avg, 2));
+
+                // Put it all together.      
+                standardDeviation = Math.Sqrt((sum) / (values.Count() - 1));
+            }
+
+            return standardDeviation;
         }
 
         private void editAverageTimes_KeyPress(object sender, KeyPressEventArgs e)
